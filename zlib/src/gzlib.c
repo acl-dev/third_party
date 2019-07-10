@@ -238,11 +238,32 @@ local gzFile gz_open(path, fd, mode)
            O_APPEND)));
 
     /* open the file with the appropriate flags (or just use fd) */
+    /* garbage code style --- zsx */
+#if 0
     state->fd = fd > -1 ? fd : (
 #ifdef _WIN32
         fd == -2 ? _wopen(path, oflag, 0666) :
 #endif
-        open((const char *)path, oflag, 0666));
+#ifdef _WIN32
+        _open((const char *)path, oflag, 0666));
+#else
+	open((const char *)path, oflag, 0666));
+#endif
+#endif
+
+    if (fd > -1) {
+        state->fd = fd;
+    } else {
+#ifdef _WIN32
+        if (fd == -2) {
+            state->fd = _wopen(path, oflag, 0666);
+        } else {
+            state->fd = _open((const char *)path, oflag, 0666);
+        }
+#else
+        state->fd = open((const char *)path, oflag, 0666);
+#endif
+    }
     if (state->fd == -1) {
         free(state->path);
         free(state);
