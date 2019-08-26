@@ -9,8 +9,10 @@
 #  define LSEEK _lseeki64
 #else
 #if defined(_LARGEFILE64_SOURCE) && _LFS64_LARGEFILE-0
+#include <unistd.h>
 #  define LSEEK lseek64
 #else
+#include <unistd.h>
 #  define LSEEK lseek
 #endif
 #endif
