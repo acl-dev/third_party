@@ -1,0 +1,2 @@
+include ':libz'
+rootProject.name='zlib'
