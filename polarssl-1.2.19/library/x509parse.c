@@ -1986,19 +1986,22 @@ int x509parse_crtpath( x509_cert *chain, const char *path )
 #if defined(POLARSSL_HAVE_READDIR_R)
     int t_ret, i;
     struct stat sb;
-    struct dirent entry, *result = NULL;
+    //struct dirent entry, *result = NULL;
+    struct dirent *result = NULL;
     char entry_name[255];
     DIR *dir = opendir( path );
 
     if( dir == NULL)
         return( POLARSSL_ERR_X509_FILE_IO_ERROR );
 
-    while( ( t_ret = readdir_r( dir, &entry, &result ) ) == 0 )
+    //while( ( t_ret = readdir_r( dir, &entry, &result ) ) == 0 )
+    while( ( result = readdir( dir ) ) != NULL )
     {
         if( result == NULL )
             break;
 
-        snprintf( entry_name, sizeof(entry_name), "%s/%s", path, entry.d_name );
+        //snprintf( entry_name, sizeof(entry_name), "%s/%s", path, entry.d_name );
+        snprintf( entry_name, sizeof(entry_name), "%s/%s", path, result->d_name );
 
         i = stat( entry_name, &sb );
 
@@ -3296,8 +3299,8 @@ static int x509parse_verifycrl(x509_cert *crt, x509_cert *ca,
 
         x509_hash( crl_list->tbs.p, crl_list->tbs.len, hash_id, hash );
 
-        if( !rsa_pkcs1_verify( &ca->rsa, NULL, NULL, RSA_PUBLIC, hash_id,
-                              0, hash, crl_list->sig.p ) == 0 )
+        if( !(rsa_pkcs1_verify( &ca->rsa, NULL, NULL, RSA_PUBLIC, hash_id,
+                              0, hash, crl_list->sig.p ) == 0) )
         {
             /*
              * CRL is not trusted

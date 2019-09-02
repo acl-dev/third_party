@@ -33,9 +33,7 @@ include_directories(
 )
 
 set(src ${CMAKE_CURRENT_SOURCE_DIR}/library)
-set(sources
-	${src}
-)
+set(sources ${src})
 
 foreach(iter ${sources})
 	aux_source_directory(${iter} lib_src)
@@ -87,6 +85,11 @@ if (${UNIX_OS})
 
 	if (!CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
 		add_definitions("-Wno-invalid-source-encoding")
+	endif()
+
+	if (CMAKE_SYSTEM_NAME MATCHES "Android")
+		add_definitions("-Wno-inline-asm"
+				"-D_SOCKLEN_T")
 	endif()
 
 	if (CMAKE_BUILD_TYPE STREQUAL "RELEASE")
