@@ -1,0 +1,2 @@
+include ':polarssl'
+rootProject.name='polarssl'
