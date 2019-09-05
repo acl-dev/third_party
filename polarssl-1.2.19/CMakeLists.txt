@@ -60,11 +60,9 @@ if (${UNIX_OS})
 		"-Wmissing-prototypes"
 		"-D_REENTRANT"
 		"-D_USE_FAST_MACRO"
-		"-DACL_WRITEABLE_CHECK"
 		"-Wno-long-long"
 		"-Wuninitialized"
 		"-D_POSIX_PTHREAD_SEMANTICS"
-		"-DACL_PREPARE_COMPILE"
 		"-Wstrict-prototypes"
 	)
 
@@ -101,8 +99,7 @@ elseif (${WIN_OS})
 	add_definitions(
 		"-Yc"
 		"-D_WINSOCK_DEPRECATED_NO_WARNINGS"
-		"-DACL_WRITEABLE_CHECK"
-		"-DACL_PREPARE_COMPILE")
+	)
 endif()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Android")

@@ -54,13 +54,17 @@ if (${UNIX_OS})
 		"-Waggregate-return"
 		"-Wmissing-prototypes"
 		"-D_REENTRANT"
-		"-D_USE_FAST_MACRO"
-		"-DACL_WRITEABLE_CHECK"
 		"-Wno-long-long"
 		"-Wuninitialized"
 		"-D_POSIX_PTHREAD_SEMANTICS"
-		"-DACL_PREPARE_COMPILE"
 		"-Wstrict-prototypes"
+		"-DSQLITE_ENABLE_FTS3"
+		"-DSQLITE_ENABLE_RTREE"
+		"-DSQLITE_ENABLE_EXPLAIN_COMMENTS"
+		"-DSQLITE_ENABLE_DBPAGE_VTAB"
+		"-DSQLITE_ENABLE_STMTVTAB"
+		"-DSQLITE_ENABLE_DBSTAT_VTAB"
+		"-Wno-unused-parameter"
 	)
 
 	if (CMAKE_COMPILER_IS_GNUCC)
@@ -91,8 +95,7 @@ elseif (${WIN_OS})
 	add_definitions(
 		"-Yc"
 		"-D_WINSOCK_DEPRECATED_NO_WARNINGS"
-		"-DACL_WRITEABLE_CHECK"
-		"-DACL_PREPARE_COMPILE")
+	)
 endif()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Android")
