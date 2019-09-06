@@ -64,6 +64,8 @@ if (${UNIX_OS})
 		"-Wuninitialized"
 		"-D_POSIX_PTHREAD_SEMANTICS"
 		"-Wstrict-prototypes"
+		"-D_FILE_OFFSET_BITS=64"
+		"-Wdeclaration-after-statement"
 	)
 
 	if (CMAKE_COMPILER_IS_GNUCC)
