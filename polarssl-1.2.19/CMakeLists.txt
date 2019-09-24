@@ -12,12 +12,20 @@ endif()
 #string(TOUPPER ${CMAKE_SYSTEM_NAME} CMAKE_SYSTEM_NAME)
 if (CMAKE_SYSTEM_NAME MATCHES "Android")
 	add_definitions("-DANDROID")
+	#	add_definitions("-flto")
+	add_definitions("-fvisibility=hidden")
+	add_definitions("-fvisibility-inlines-hidden")
+	add_definitions("-Wno-unused-command-line-argument")
+	string(APPEND CMAKE_C_FLAGS " -Qunused-arguments")
 	set(UNIX_OS true)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
+	add_definitions("-O2")
 	set(UNIX_OS true)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+	add_definitions("-O2")
 	set(UNIX_OS true)
 elseif (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+	add_definitions("-O2")
 	set(UNIX_OS true)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
 	set(WIN_OS true)
@@ -50,7 +58,6 @@ endforeach()
 if (${UNIX_OS})
 	add_definitions(
 		"-W"
-		"-O2"
 		"-fPIC"
 		"-Wall"
 		"-Werror"
