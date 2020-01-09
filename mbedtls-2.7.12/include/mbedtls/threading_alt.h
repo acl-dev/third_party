@@ -18,9 +18,6 @@ extern "C" {
 #endif
 
 #if defined(_WIN32) || defined(_WIN64)
-
-typedef void *HANDLE;
-
 // same as in lib_acl/include/thread/acl_pthread.h
 typedef struct mbedtls_threading_mutex_t
 {
