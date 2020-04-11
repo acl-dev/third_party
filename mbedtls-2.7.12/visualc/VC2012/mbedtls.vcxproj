@@ -353,6 +353,7 @@
     <ClInclude Include="..\..\include\mbedtls\ssl_internal.h" />
     <ClInclude Include="..\..\include\mbedtls\ssl_ticket.h" />
     <ClInclude Include="..\..\include\mbedtls\threading.h" />
+    <ClInclude Include="..\..\include\mbedtls\threading_alt.h" />
     <ClInclude Include="..\..\include\mbedtls\timing.h" />
     <ClInclude Include="..\..\include\mbedtls\version.h" />
     <ClInclude Include="..\..\include\mbedtls\x509.h" />

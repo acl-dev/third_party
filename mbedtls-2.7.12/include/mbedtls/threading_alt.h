@@ -21,6 +21,13 @@ extern "C" {
 
 #if defined(MBEDTLS_THREADING_ALT)
 # if defined(_WIN32) || defined(_WIN64)
+//#  include <windows.h>
+# if(_MSC_VER >= 1300)
+#  include <winsock2.h>
+#  include <mswsock.h>
+# else
+#  include <winsock.h>
+# endif
 // same as in lib_acl/include/thread/acl_pthread.h
 typedef struct mbedtls_threading_mutex_t
 {

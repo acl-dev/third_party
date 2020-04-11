@@ -55,8 +55,15 @@
 
 #include <ws2tcpip.h>
 
-#include <winsock2.h>
-#include <windows.h>
+//#include <winsock2.h>
+//#include <windows.h>
+
+# if(_MSC_VER >= 1300)
+#  include <winsock2.h>
+#  include <mswsock.h>
+# else
+#  include <winsock.h>
+# endif
 
 #if defined(_MSC_VER)
 #if defined(_WIN32_WCE)
