@@ -24,12 +24,12 @@ WINDOWS_BUILD=1
 endif
 
 # To compile as a shared library:
-ifdef SHARED
+#ifdef SHARED
 # all code is position-indep with mingw, avoid warning about useless flag
 ifndef WINDOWS_BUILD
 LOCAL_CFLAGS += -fPIC -fpic
 endif
-endif
+#endif
 
 SOEXT_TLS=so.10
 SOEXT_X509=so.0
@@ -37,6 +37,10 @@ SOEXT_CRYPTO=so.2
 
 # Set DLEXT=dylib to compile as a shared library for Mac OS X
 DLEXT ?= so
+
+ifneq ($(APPLE_BUILD),0)
+DLEXT = dylib
+endif
 
 # Set AR_DASH= (empty string) to use an ar implementation that does not accept
 # the - prefix for command line options (e.g. llvm-ar)
@@ -81,15 +85,33 @@ OBJS_TLS=	debug.o		net_sockets.o		\
 
 .PHONY: all static shared clean
 
-ifndef SHARED
-all: static
-else
+#ifndef SHARED
+#all: static
+#else
 all: shared static
-endif
+#endif
 
-static: libmbedcrypto.a libmbedx509.a libmbedtls.a
+static: libmbedcrypto.a libmbedx509.a libmbedtls.a libmbedtls_all.a
 
-shared: libmbedcrypto.$(DLEXT) libmbedx509.$(DLEXT) libmbedtls.$(DLEXT)
+shared: libmbedcrypto.$(DLEXT) libmbedx509.$(DLEXT) libmbedtls.$(DLEXT) libmbedtls_all.$(DLEXT)
+
+# libmbedtls_all.a
+libmbedtls_all.a: $(OBJS_CRYPTO) $(OBJS_X509) $(OBJS_TLS)
+	echo "  AR    $@"
+	$(AR) $(AR_DASH)rc $@ $(OBJS_CRYPTO) $(OBJS_X509) $(OBJS_TLS)
+	echo "  RL    $@"
+	$(AR) $(AR_DASH)s $@
+
+# libmbedtls_all
+libmbedtls_all.$(SOEXT_TLS): $(OBJS_CRYPTO) $(OBJS_X509) $(OBJS_TLS)
+	echo "  LD    $@"
+	$(CC) -shared -Wl,-soname,$@ $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@ $(OBJS_CRYPTO) $(OBJS_X509) $(OBJS_TLS)
+libmbedtls_all.so: libmbedtls_all.$(SOEXT_TLS)
+	echo "  LN    $@ -> $<"
+	ln -sf $< $@
+libmbedtls_all.dylib: $(OBJS_CRYPTO) $(OBJS_X509) $(OBJS_TLS)
+	echo "  LD    $@"
+	$(CC) -dynamiclib $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@ $(OBJS_CRYPTO) $(OBJS_X509) $(OBJS_TLS)
 
 # tls
 libmbedtls.a: $(OBJS_TLS)
