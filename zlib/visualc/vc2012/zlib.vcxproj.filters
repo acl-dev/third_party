@@ -15,84 +15,84 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\zconf.h">
+    <ClInclude Include="..\..\include\zconf.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\zlib.h">
+    <ClInclude Include="..\..\include\zlib.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\zutil.h">
+    <ClInclude Include="..\..\include\zutil.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\crc32.h">
+    <ClInclude Include="..\..\src\crc32.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\deflate.h">
+    <ClInclude Include="..\..\src\deflate.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\gzguts.h">
+    <ClInclude Include="..\..\src\gzguts.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\inffast.h">
+    <ClInclude Include="..\..\src\inffast.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\inffixed.h">
+    <ClInclude Include="..\..\src\inffixed.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\inflate.h">
+    <ClInclude Include="..\..\src\inflate.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\inftrees.h">
+    <ClInclude Include="..\..\src\inftrees.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\trees.h">
+    <ClInclude Include="..\..\src\trees.h">
       <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\adler32.c">
+    <ClCompile Include="..\..\src\adler32.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\compress.c">
+    <ClCompile Include="..\..\src\compress.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\crc32.c">
+    <ClCompile Include="..\..\src\crc32.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\deflate.c">
+    <ClCompile Include="..\..\src\deflate.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\gzclose.c">
+    <ClCompile Include="..\..\src\gzclose.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\gzlib.c">
+    <ClCompile Include="..\..\src\gzlib.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\gzread.c">
+    <ClCompile Include="..\..\src\gzread.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\gzwrite.c">
+    <ClCompile Include="..\..\src\gzwrite.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\infback.c">
+    <ClCompile Include="..\..\src\infback.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\inffast.c">
+    <ClCompile Include="..\..\src\inffast.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\inflate.c">
+    <ClCompile Include="..\..\src\inflate.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\inftrees.c">
+    <ClCompile Include="..\..\src\inftrees.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\trees.c">
+    <ClCompile Include="..\..\src\trees.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\uncompr.c">
+    <ClCompile Include="..\..\src\uncompr.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\zutil.c">
+    <ClCompile Include="..\..\src\zutil.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
