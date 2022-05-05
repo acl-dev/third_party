@@ -13,21 +13,18 @@
 #ifndef __THREADING_ALT_INCLUDE_H__
 #define __THREADING_ALT_INCLUDE_H__
 
-#include "config.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if defined(MBEDTLS_THREADING_ALT)
-# if defined(_WIN32) || defined(_WIN64)
-//#  include <windows.h>
+#if defined(_WIN32) || defined(_WIN64)
 # if(_MSC_VER >= 1300)
 #  include <winsock2.h>
 #  include <mswsock.h>
 # else
 #  include <winsock.h>
 # endif
+
 // same as in lib_acl/include/thread/acl_pthread.h
 typedef struct mbedtls_threading_mutex_t
 {
@@ -35,11 +32,12 @@ typedef struct mbedtls_threading_mutex_t
     char  dynamic;
 } mbedtls_threading_mutex_t;
 
-# elif !defined(MBEDTLS_THREADING_PTHREAD)
+#else
 
-#  include <pthread.h>
-#  define mbedtls_threading_mutex_t pthread_mutex_t
-# endif
+# include <pthread.h>
+
+#define mbedtls_threading_mutex_t pthread_mutex_t
+
 #endif
 
 #ifdef __cplusplus

@@ -432,9 +432,6 @@
     <ClInclude Include="..\..\include\mbedtls\xtea.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\mbedtls\threading_alt.h">
-      <Filter>include</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">

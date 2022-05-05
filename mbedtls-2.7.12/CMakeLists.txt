@@ -1,218 +1,220 @@
-cmake_minimum_required(VERSION 2.6)
-project("mbed TLS" C)
+cmake_minimum_required(VERSION 2.8)
 
-option(USE_PKCS11_HELPER_LIBRARY "Build mbed TLS with the pkcs11-helper library." OFF)
-option(ENABLE_ZLIB_SUPPORT "Build mbed TLS with zlib library." OFF)
+#set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Release CACHE STRING "set build type to release")
 
-option(ENABLE_PROGRAMS "Build mbed TLS programs." ON)
+#message(project_dir=${PROJECT_SOURCE_DIR})
 
-option(UNSAFE_BUILD "Allow unsafe builds. These builds ARE NOT SECURE." OFF)
+if (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+	message(FATAL_ERROR "Please into another dir to build!")
+endif()
 
-string(REGEX MATCH "Clang" CMAKE_COMPILER_IS_CLANG "${CMAKE_C_COMPILER_ID}")
-string(REGEX MATCH "GNU" CMAKE_COMPILER_IS_GNU "${CMAKE_C_COMPILER_ID}")
-string(REGEX MATCH "IAR" CMAKE_COMPILER_IS_IAR "${CMAKE_C_COMPILER_ID}")
-string(REGEX MATCH "MSVC" CMAKE_COMPILER_IS_MSVC "${CMAKE_C_COMPILER_ID}")
+message(STATUS "ndk=${CMAKE_ANDROID_NDK}")
 
-# the test suites currently have compile errors with MSVC
-if(CMAKE_COMPILER_IS_MSVC)
-    option(ENABLE_TESTING "Build mbed TLS tests." OFF)
+#string(TOUPPER ${CMAKE_SYSTEM_NAME} CMAKE_SYSTEM_NAME)
+if (CMAKE_SYSTEM_NAME MATCHES "Android")
+    message(STATUS "current ndk path: ${CMAKE_ANDROID_NDK}")
+
+	add_definitions("-O0 -DANDROID")
+	add_definitions("-fvisibility=hidden")
+	add_definitions("-fvisibility-inlines-hidden")
+	add_definitions("-Wno-unused-command-line-argument")
+	add_definitions("-fdata-sections -ffunction-sections")
+	string(APPEND CMAKE_C_FLAGS " -Qunused-arguments")
+	set(UNIX_OS true)
+elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
+	add_definitions("-Os -fdata-sections -ffunction-sections")
+	set(UNIX_OS true)
+elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+	add_definitions("-fvisibility=hidden")
+	add_definitions("-fvisibility-inlines-hidden")
+	add_definitions("-Os -fdata-sections -ffunction-sections")
+	set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-dead_strip")
+	set(UNIX_OS true)
+elseif (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+	add_definitions("-O2")
+	set(UNIX_OS true)
+elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
+	set(WIN_OS true)
 else()
-    option(ENABLE_TESTING "Build mbed TLS tests." ON)
+	message(FATAL_ERROR "unknown CMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}")
 endif()
 
-# Warning string - created as a list for compatibility with CMake 2.8
-set(WARNING_BORDER "*******************************************************\n")
-set(NULL_ENTROPY_WARN_L1 "****  WARNING!  MBEDTLS_TEST_NULL_ENTROPY defined!\n")
-set(NULL_ENTROPY_WARN_L2 "****  THIS BUILD HAS NO DEFINED ENTROPY SOURCES\n")
-set(NULL_ENTROPY_WARN_L3 "****  AND IS *NOT* SUITABLE FOR PRODUCTION USE\n")
+##############################################################################
 
-set(NULL_ENTROPY_WARNING "${WARNING_BORDER}"
-                         "${NULL_ENTROPY_WARN_L1}"
-                         "${NULL_ENTROPY_WARN_L2}"
-                         "${NULL_ENTROPY_WARN_L3}"
-                         "${WARNING_BORDER}")
+include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
-find_package(Perl)
-if(PERL_FOUND)
+set(src_path ${CMAKE_CURRENT_SOURCE_DIR}/library)
+set(src_crypto
+	${src_path}/aes.c
+	${src_path}/aesni.c
+	${src_path}/arc4.c
+	${src_path}/asn1parse.c
+	${src_path}/asn1write.c
+	${src_path}/base64.c
+	${src_path}/bignum.c
+	${src_path}/blowfish.c
+	${src_path}/camellia.c
+	${src_path}/ccm.c
+	${src_path}/cipher.c
+	${src_path}/cipher_wrap.c
+	${src_path}/cmac.c
+	${src_path}/ctr_drbg.c
+	${src_path}/des.c
+	${src_path}/dhm.c
+	${src_path}/ecdh.c
+	${src_path}/ecdsa.c
+	${src_path}/ecjpake.c
+	${src_path}/ecp.c
+	${src_path}/ecp_curves.c
+	${src_path}/entropy.c
+	${src_path}/entropy_poll.c
+	${src_path}/error.c
+	${src_path}/gcm.c
+	${src_path}/havege.c
+	${src_path}/hmac_drbg.c
+	${src_path}/md.c
+	${src_path}/md2.c
+	${src_path}/md4.c
+	${src_path}/md5.c
+	${src_path}/md_wrap.c
+	${src_path}/memory_buffer_alloc.c
+	${src_path}/oid.c
+	${src_path}/padlock.c
+	${src_path}/pem.c
+	${src_path}/pk.c
+	${src_path}/pk_wrap.c
+	${src_path}/pkcs12.c
+	${src_path}/pkcs5.c
+	${src_path}/pkparse.c
+	${src_path}/pkwrite.c
+	${src_path}/platform.c
+	${src_path}/ripemd160.c
+	${src_path}/rsa.c
+	${src_path}/rsa_internal.c
+	${src_path}/sha1.c
+	${src_path}/sha256.c
+	${src_path}/sha512.c
+	${src_path}/threading.c
+	${src_path}/timing.c
+	${src_path}/version.c
+	${src_path}/version_features.c
+	${src_path}/xtea.c
+)
 
-    # If NULL Entropy is configured, display an appropriate warning
-    execute_process(COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/config.pl -f ${CMAKE_CURRENT_SOURCE_DIR}/include/mbedtls/config.h get MBEDTLS_TEST_NULL_ENTROPY
-                        RESULT_VARIABLE result)
-    if(${result} EQUAL 0)
-        message(WARNING ${NULL_ENTROPY_WARNING})
+set(src_x509
+	${src_path}/certs.c
+	${src_path}/pkcs11.c
+	${src_path}/x509.c
+	${src_path}/x509_create.c
+	${src_path}/x509_crl.c
+	${src_path}/x509_crt.c
+	${src_path}/x509_csr.c
+	${src_path}/x509write_crt.c
+	${src_path}/x509write_csr.c
+)
 
-        if(NOT UNSAFE_BUILD)
-            message(FATAL_ERROR "\
-\n\
-Warning! You have enabled MBEDTLS_TEST_NULL_ENTROPY. \
-This option is not safe for production use and negates all security \
-It is intended for development use only. \
-\n\
-To confirm you want to build with this option, re-run cmake with the \
-option: \n\
-  cmake -DUNSAFE_BUILD=ON ")
+set(src_tls
+	${src_path}/debug.c
+	${src_path}/net_sockets.c
+	${src_path}/ssl_cache.c
+	${src_path}/ssl_ciphersuites.c
+	${src_path}/ssl_cli.c
+	${src_path}/ssl_cookie.c
+	${src_path}/ssl_srv.c
+	${src_path}/ssl_ticket.c
+	${src_path}/ssl_tls.c
+)
 
-            return()
-        endif()
-    endif()
+set(src_all ${src_tls} ${src_x509} ${src_crypto})
+
+##############################################################################
+
+if (${UNIX_OS})
+	add_definitions(
+		"-W"
+		"-fPIC"
+		"-Wall"
+		"-Werror"
+		"-Wshadow"
+		"-Wpointer-arith"
+		"-Waggregate-return"
+		"-Wmissing-prototypes"
+		"-D_REENTRANT"
+		"-D_USE_FAST_MACRO"
+		"-Wno-long-long"
+		"-Wuninitialized"
+		"-D_POSIX_PTHREAD_SEMANTICS"
+		"-Wstrict-prototypes"
+		"-D_FILE_OFFSET_BITS=64"
+		"-Wdeclaration-after-statement"
+	)
+
+	if (CMAKE_COMPILER_IS_GNUCC)
+		execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
+			OUTPUT_VARIABLE GCC_VERSION)
+		string(REGEX MATCHALL "[0-9]+" GCC_VERSION_COMPONENTS ${GCC_VERSION})
+		list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
+#		list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
+
+		if(CMAKE_VERSION GREATER "3.0")
+#			if ((GCC_MAJOR GREATER_EQUAL 4) AND (GCC_MINOR GREATER_EQUAL 8))
+				message(STATUS "gcc version major=${GCC_MAJOR}")
+#				message(STATUS "gcc version minor=${GCC_MINOR}")
+#			endif()
+		endif()
+	endif()
+
+	if (!CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+		add_definitions("-Wno-invalid-source-encoding")
+	endif()
+
+	if (CMAKE_SYSTEM_NAME MATCHES "Android")
+		add_definitions("-Wno-inline-asm -D_SOCKLEN_T")
+	endif()
+
+	if (CMAKE_BUILD_TYPE STREQUAL "RELEASE")
+		#add_definitions("-Os")
+	else()
+		add_definitions("-g")
+	endif()
+elseif (${WIN_OS})
+	add_definitions("-Yc -D_WINSOCK_DEPRECATED_NO_WARNINGS")
 endif()
 
-set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}
-    CACHE STRING "Choose the type of build: None Debug Release Coverage ASan ASanDbg MemSan MemSanDbg Check CheckFull"
-    FORCE)
+if (CMAKE_SYSTEM_NAME MATCHES "Android")
+	set(CMAKE_SHARED_LINKER_FLAGS "-shared")
+	set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/android/lib/${ANDROID_ABI})
+	set(LIBRARY_OUTPUT_PATH ${lib_output_path})
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${lib_output_path})
 
-# Create a symbolic link from ${base_name} in the binary directory
-# to the corresponding path in the source directory.
-function(link_to_source base_name)
-    # Get OS dependent path to use in `execute_process`
-    if (CMAKE_HOST_WIN32)
-        #mklink is an internal command of cmd.exe it can only work with \
-        string(REPLACE "/" "\\" link "${CMAKE_CURRENT_BINARY_DIR}/${base_name}")
-        string(REPLACE "/" "\\" target "${CMAKE_CURRENT_SOURCE_DIR}/${base_name}")
-    else()
-        set(link "${CMAKE_CURRENT_BINARY_DIR}/${base_name}")
-        set(target "${CMAKE_CURRENT_SOURCE_DIR}/${base_name}")
-    endif()
+	add_library(mbedcrypto_static STATIC ${src_crypto})
+	SET_TARGET_PROPERTIES(mbedcrypto_static PROPERTIES OUTPUT_NAME "mbedcrypto")
 
-    if (NOT EXISTS ${link})
-        if (CMAKE_HOST_UNIX)
-            set(command ln -s ${target} ${link})
-        else()
-            if (IS_DIRECTORY ${target})
-                set(command cmd.exe /c mklink /j ${link} ${target})
-            else()
-                set(command cmd.exe /c mklink /h ${link} ${target})
-            endif()
-        endif()
+    add_library(mbedtls_all_static STATIC ${src_all})
+	SET_TARGET_PROPERTIES(mbedtls_all_static PROPERTIES OUTPUT_NAME "mbedtls_all")
 
-        execute_process(COMMAND ${command}
-            RESULT_VARIABLE result
-            ERROR_VARIABLE output)
-
-        if (NOT ${result} EQUAL 0)
-            message(FATAL_ERROR "Could not create symbolic link for: ${target} --> ${output}")
-        endif()
-    endif()
-endfunction(link_to_source)
-
-string(REGEX MATCH "Clang" CMAKE_COMPILER_IS_CLANG "${CMAKE_C_COMPILER_ID}")
-
-if(CMAKE_COMPILER_IS_GNU)
-    # some warnings we want are not available with old GCC versions
-    # note: starting with CMake 2.8 we could use CMAKE_C_COMPILER_VERSION
-    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
-                    OUTPUT_VARIABLE GCC_VERSION)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -W -Wdeclaration-after-statement -Wwrite-strings")
-    if (GCC_VERSION VERSION_GREATER 4.5 OR GCC_VERSION VERSION_EQUAL 4.5)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wlogical-op")
-    endif()
-    if (GCC_VERSION VERSION_GREATER 4.8 OR GCC_VERSION VERSION_EQUAL 4.8)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wshadow")
-    endif()
-    set(CMAKE_C_FLAGS_RELEASE     "-O2")
-    set(CMAKE_C_FLAGS_DEBUG       "-O0 -g3")
-    set(CMAKE_C_FLAGS_COVERAGE    "-O0 -g3 --coverage")
-    set(CMAKE_C_FLAGS_ASAN        "-Werror -fsanitize=address -fno-common -O3")
-    set(CMAKE_C_FLAGS_ASANDBG     "-Werror -fsanitize=address -fno-common -O1 -g3 -fno-omit-frame-pointer -fno-optimize-sibling-calls ")
-    set(CMAKE_C_FLAGS_CHECK       "-Werror -Os")
-    set(CMAKE_C_FLAGS_CHECKFULL   "${CMAKE_C_FLAGS_CHECK} -Wcast-qual")
-endif(CMAKE_COMPILER_IS_GNU)
-
-if(CMAKE_COMPILER_IS_CLANG)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -W -Wdeclaration-after-statement -Wwrite-strings -Wpointer-arith -Wimplicit-fallthrough -Wshadow")
-    set(CMAKE_C_FLAGS_RELEASE     "-O2")
-    set(CMAKE_C_FLAGS_DEBUG       "-O0 -g3")
-    set(CMAKE_C_FLAGS_COVERAGE    "-O0 -g3 --coverage")
-    set(CMAKE_C_FLAGS_ASAN        "-Werror -fsanitize=address -fno-common -fsanitize=undefined -fno-sanitize-recover=all -O3")
-    set(CMAKE_C_FLAGS_ASANDBG     "-Werror -fsanitize=address -fno-common -fsanitize=undefined -fno-sanitize-recover=all -O1 -g3 -fno-omit-frame-pointer -fno-optimize-sibling-calls ")
-    set(CMAKE_C_FLAGS_MEMSAN      "-Werror -fsanitize=memory -O3")
-    set(CMAKE_C_FLAGS_MEMSANDBG   "-Werror -fsanitize=memory -O1 -g3 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-memory-track-origins=2")
-    set(CMAKE_C_FLAGS_CHECK       "-Werror -Os")
-endif(CMAKE_COMPILER_IS_CLANG)
-
-if(CMAKE_COMPILER_IS_IAR)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --warn_about_c_style_casts --warnings_are_errors -Ohz")
-endif(CMAKE_COMPILER_IS_IAR)
-
-if(CMAKE_COMPILER_IS_MSVC)
-    # Strictest warnings, and treat as errors
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W3")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX")
-endif(CMAKE_COMPILER_IS_MSVC)
-
-if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
-    if(CMAKE_COMPILER_IS_GNU OR CMAKE_COMPILER_IS_CLANG)
-        set(CMAKE_SHARED_LINKER_FLAGS "--coverage")
-    endif(CMAKE_COMPILER_IS_GNU OR CMAKE_COMPILER_IS_CLANG)
-endif(CMAKE_BUILD_TYPE STREQUAL "Coverage")
-
-if(LIB_INSTALL_DIR)
+	link_directories(${lib_output_path})
 else()
-    set(LIB_INSTALL_DIR lib)
+	set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+	set(LIBRARY_OUTPUT_PATH ${lib_output_path})
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${lib_output_path})
+
+	add_library(mbedcrypto_static STATIC ${src_crypto})
+	SET_TARGET_PROPERTIES(mbedcrypto_static PROPERTIES OUTPUT_NAME "mbedcrypto")
+
+    add_library(mbedtls_all_static STATIC ${src_all})
+	SET_TARGET_PROPERTIES(mbedtls_all_static PROPERTIES OUTPUT_NAME "mbedtls_all")
+
+	if (${WIN_OS})
+		set(CMAKE_SHARED_LINKER_FLAGS "/DYNAMICBASE ws2_32.lib IPHlpApi.lib")
+	endif()
 endif()
 
-include_directories(include/)
+add_library(mbedcrypto SHARED ${src_crypto})
+add_library(mbedtls_all SHARED ${src_all})
 
-if(ENABLE_ZLIB_SUPPORT)
-    find_package(ZLIB)
-
-    if(ZLIB_FOUND)
-        include_directories(${ZLIB_INCLUDE_DIR})
-    endif(ZLIB_FOUND)
-endif(ENABLE_ZLIB_SUPPORT)
-
-add_subdirectory(library)
-add_subdirectory(include)
-
-if(ENABLE_PROGRAMS)
-    add_subdirectory(programs)
-endif()
-
-ADD_CUSTOM_TARGET(apidoc
-    COMMAND doxygen mbedtls.doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doxygen)
-
-if(ENABLE_TESTING)
-    enable_testing()
-
-    add_subdirectory(tests)
-
-    # additional convenience targets for Unix only
-    if(UNIX)
-
-        ADD_CUSTOM_TARGET(covtest
-            COMMAND make test
-            COMMAND programs/test/selftest
-            COMMAND tests/compat.sh
-            COMMAND tests/ssl-opt.sh
-        )
-
-        ADD_CUSTOM_TARGET(lcov
-            COMMAND rm -rf Coverage
-            COMMAND lcov --capture --initial --directory library/CMakeFiles/mbedtls.dir -o files.info
-            COMMAND lcov --capture --directory library/CMakeFiles/mbedtls.dir -o tests.info
-            COMMAND lcov --add-tracefile files.info --add-tracefile tests.info -o all.info
-            COMMAND lcov --remove all.info -o final.info '*.h'
-            COMMAND gendesc tests/Descriptions.txt -o descriptions
-            COMMAND genhtml --title "mbed TLS" --description-file descriptions --keep-descriptions --legend --no-branch-coverage -o Coverage final.info
-            COMMAND rm -f files.info tests.info all.info final.info descriptions
-        )
-
-        ADD_CUSTOM_TARGET(memcheck
-            COMMAND sed -i.bak s+/usr/bin/valgrind+`which valgrind`+ DartConfiguration.tcl
-            COMMAND ctest -O memcheck.log -D ExperimentalMemCheck
-            COMMAND tail -n1 memcheck.log | grep 'Memory checking results:' > /dev/null
-            COMMAND rm -f memcheck.log
-            COMMAND mv DartConfiguration.tcl.bak DartConfiguration.tcl
-        )
-    endif(UNIX)
-
-    # Make scripts needed for testing available in an out-of-source build.
-    if (NOT ${CMAKE_CURRENT_BINARY_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-        link_to_source(scripts)
-        # Copy (don't link) DartConfiguration.tcl, needed for memcheck, to
-        # keep things simple with the sed commands in the memcheck target.
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/DartConfiguration.tcl
-                    ${CMAKE_CURRENT_BINARY_DIR}/DartConfiguration.tcl COPYONLY)
-    endif()
-endif()
+##############################################################################
