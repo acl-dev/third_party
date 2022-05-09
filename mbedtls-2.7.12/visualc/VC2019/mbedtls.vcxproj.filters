@@ -432,6 +432,7 @@
     <ClInclude Include="..\..\include\mbedtls\xtea.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -440,5 +441,8 @@
     <Filter Include="include">
       <UniqueIdentifier>{ed1f8921-6b47-419e-9e23-aca57598796c}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="mbedtls.rc" />
   </ItemGroup>
 </Project>
