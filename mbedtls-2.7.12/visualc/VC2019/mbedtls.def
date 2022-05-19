@@ -64,4 +64,10 @@ mbedtls_md5_ret
 mbedtls_mpi_bitlen
 mbedtls_mpi_read_string
 
+mbedtls_des_setkey_enc
+mbedtls_des_setkey_dec
+mbedtls_des3_set3key_enc
+mbedtls_des3_set3key_dec
+mbedtls_des3_crypt_cbc
+
 
