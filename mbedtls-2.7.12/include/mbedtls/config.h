@@ -1477,6 +1477,7 @@
  *
  * Uncomment this to allow your own alternate threading implementation.
  */
+// changed by zsx.
 #if defined(_WIN32) || defined(_WIN64)
 # define MBEDTLS_THREADING_ALT
 #endif
@@ -1490,7 +1491,8 @@
  *
  * Uncomment this to enable pthread mutexes.
  */
-#if defined(__linux__) || defined(ANDROID) || defined(__APPLE__) || defined(__FreeBSD__)
+// changed by zsx.
+#if !defined(_WIN32) && !defined(_WIN64)
 # define MBEDTLS_THREADING_PTHREAD
 #endif
 
@@ -2569,6 +2571,7 @@
  *
  * Enable this layer to allow use of mutexes within mbed TLS
  */
+// changed by zsx
 #define MBEDTLS_THREADING_C
 
 /**

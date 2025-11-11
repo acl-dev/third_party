@@ -2168,7 +2168,10 @@
  *
  * Uncomment this to allow your own alternate threading implementation.
  */
-//#define MBEDTLS_THREADING_ALT
+// changed by zsx.
+#if defined(_WIN32) || defined(_WIN64)
+# define MBEDTLS_THREADING_ALT
+#endif
 
 /**
  * \def MBEDTLS_THREADING_PTHREAD
@@ -2179,7 +2182,11 @@
  *
  * Uncomment this to enable pthread mutexes.
  */
-//#define MBEDTLS_THREADING_PTHREAD
+
+// changed by zsx.
+#if !defined(_WIN32) && !defined(_WIN64)
+# define MBEDTLS_THREADING_PTHREAD
+#endif
 
 /**
  * \def MBEDTLS_USE_PSA_CRYPTO
@@ -3761,7 +3768,8 @@
  *
  * Enable this layer to allow use of mutexes within Mbed TLS
  */
-//#define MBEDTLS_THREADING_C
+// changed by zsx.
+#define MBEDTLS_THREADING_C
 
 /**
  * \def MBEDTLS_TIMING_C
