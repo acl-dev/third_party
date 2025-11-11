@@ -22,12 +22,22 @@ if (CMAKE_SYSTEM_NAME MATCHES "Android")
 	add_definitions("-fdata-sections -ffunction-sections")
 	string(APPEND CMAKE_C_FLAGS " -Qunused-arguments")
 	set(UNIX_OS true)
+elseif (CMAKE_SYSTEM_NAME MATCHES "OHOS")
+    message(STATUS "current ndk path: ${CMAKE_ANDROID_NDK}")
+
+	add_definitions("-O0 -DANDROID")
+	add_definitions("-fvisibility=hidden")
+	add_definitions("-fvisibility-inlines-hidden")
+	add_definitions("-Wno-unused-command-line-argument")
+	add_definitions("-fdata-sections -ffunction-sections")
+	string(APPEND CMAKE_C_FLAGS " -Qunused-arguments")
+	set(UNIX_OS true)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
 	add_definitions("-Os -fdata-sections -ffunction-sections")
 	set(UNIX_OS true)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-#	add_definitions("-fvisibility=hidden")
-#	add_definitions("-fvisibility-inlines-hidden")
+	add_definitions("-fvisibility=hidden")
+	add_definitions("-fvisibility-inlines-hidden")
 	add_definitions("-Os -fdata-sections -ffunction-sections")
 	set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-dead_strip")
 	set(UNIX_OS true)
@@ -106,7 +116,7 @@ set(src_crypto
 )
 
 set(src_x509
-	${src_path}/certs.c
+#	${src_path}/certs.c
 	${src_path}/pkcs11.c
 	${src_path}/x509.c
 	${src_path}/x509_create.c
@@ -176,6 +186,10 @@ if (${UNIX_OS})
 		add_definitions("-Wno-inline-asm -D_SOCKLEN_T")
 	endif()
 
+	if (CMAKE_SYSTEM_NAME MATCHES "OHOS")
+		add_definitions("-Wno-inline-asm -D_SOCKLEN_T")
+	endif()
+
 	if (CMAKE_BUILD_TYPE STREQUAL "RELEASE")
 		#add_definitions("-Os")
 	else()
@@ -188,6 +202,19 @@ endif()
 if (CMAKE_SYSTEM_NAME MATCHES "Android")
 	set(CMAKE_SHARED_LINKER_FLAGS "-shared")
 	set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/android/lib/${ANDROID_ABI})
+	set(LIBRARY_OUTPUT_PATH ${lib_output_path})
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${lib_output_path})
+
+	add_library(mbedcrypto_static STATIC ${src_crypto})
+	SET_TARGET_PROPERTIES(mbedcrypto_static PROPERTIES OUTPUT_NAME "mbedcrypto")
+
+    add_library(mbedtls_all_static STATIC ${src_all})
+	SET_TARGET_PROPERTIES(mbedtls_all_static PROPERTIES OUTPUT_NAME "mbedtls_all")
+
+	link_directories(${lib_output_path})
+elseif (CMAKE_SYSTEM_NAME MATCHES "OHOS")
+	set(CMAKE_SHARED_LINKER_FLAGS "-shared")
+	set(lib_output_path ${CMAKE_CURRENT_SOURCE_DIR}/harmony/lib/${OHOS_ARCH})
 	set(LIBRARY_OUTPUT_PATH ${lib_output_path})
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${lib_output_path})
 

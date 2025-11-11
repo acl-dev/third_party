@@ -1,0 +1,53 @@
+{
+  "module": {
+    "name": "mbed",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "MbedAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+      "2in1",
+      "car"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "MbedAbility",
+        "srcEntry": "./ets/mbedability/MbedAbility.ets",
+        "description": "$string:MbedAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:MbedAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ]
+      }
+    ],
+    "extensionAbilities": [
+      {
+        "name": "MbedBackupAbility",
+        "srcEntry": "./ets/mbedbackupability/MbedBackupAbility.ets",
+        "type": "backup",
+        "exported": false,
+        "metadata": [
+          {
+            "name": "ohos.extension.backup",
+            "resource": "$profile:backup_config"
+          }
+        ],
+      }
+    ]
+  }
+}

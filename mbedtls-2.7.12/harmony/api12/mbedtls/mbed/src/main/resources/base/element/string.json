@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "MbedAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "MbedAbility_label",
+      "value": "label"
+    }
+  ]
+}
