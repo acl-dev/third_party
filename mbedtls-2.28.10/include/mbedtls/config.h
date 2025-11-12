@@ -1606,7 +1606,8 @@
  *
  * Enable the checkup functions (*_self_test).
  */
-#define MBEDTLS_SELF_TEST
+// Changed by zsx.
+//#define MBEDTLS_SELF_TEST
 
 /**
  * \def MBEDTLS_SHA256_SMALLER
@@ -2298,7 +2299,10 @@
  *
  * Uncomment this to allow your own alternate threading implementation.
  */
-//#define MBEDTLS_THREADING_ALT
+// Changed by zsx.
+#if defined(_WIN32) || defined(_WIN64)
+# define MBEDTLS_THREADING_ALT
+#endif
 
 /**
  * \def MBEDTLS_THREADING_PTHREAD
@@ -2309,7 +2313,10 @@
  *
  * Uncomment this to enable pthread mutexes.
  */
-//#define MBEDTLS_THREADING_PTHREAD
+// Changed by zsx.
+#if !defined(_WIN32) && !defined(_WIN64)
+# define MBEDTLS_THREADING_PTHREAD
+#endif
 
 /**
  * \def MBEDTLS_USE_PSA_CRYPTO
@@ -3692,7 +3699,8 @@
  *
  * Enable this layer to allow use of mutexes within Mbed TLS
  */
-//#define MBEDTLS_THREADING_C
+// Changed by zsx.
+#define MBEDTLS_THREADING_C
 
 /**
  * \def MBEDTLS_TIMING_C

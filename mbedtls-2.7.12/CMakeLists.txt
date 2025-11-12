@@ -36,8 +36,8 @@ elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
 	add_definitions("-Os -fdata-sections -ffunction-sections")
 	set(UNIX_OS true)
 elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-	add_definitions("-fvisibility=hidden")
-	add_definitions("-fvisibility-inlines-hidden")
+#	add_definitions("-fvisibility=hidden")
+#	add_definitions("-fvisibility-inlines-hidden")
 	add_definitions("-Os -fdata-sections -ffunction-sections")
 	set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-dead_strip")
 	set(UNIX_OS true)
@@ -116,7 +116,7 @@ set(src_crypto
 )
 
 set(src_x509
-#	${src_path}/certs.c
+	${src_path}/certs.c
 	${src_path}/pkcs11.c
 	${src_path}/x509.c
 	${src_path}/x509_create.c
