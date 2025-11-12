@@ -1,0 +1,5 @@
+{
+  "libmbed.so": {
+    "source": "src/mock/Libmbed.mock.ets"
+  }
+}
