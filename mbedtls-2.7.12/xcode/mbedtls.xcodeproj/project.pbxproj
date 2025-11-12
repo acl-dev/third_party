@@ -647,8 +647,6 @@
 					"-fvisibility=hidden",
 					"-fvisibility-inlines-hidden",
 					"-Os",
-					"-fembed-bitcode",
-					"-flto=thin",
 					"-fdata-sections",
 					"-ffunction-sections",
 					"-Wno-documentation-deprecated-sync",
@@ -713,8 +711,6 @@
 					"-fvisibility=hidden",
 					"-fvisibility-inlines-hidden",
 					"-Os",
-					"-fembed-bitcode",
-					"-flto=thin",
 					"-fdata-sections",
 					"-ffunction-sections",
 					"-Wno-documentation-deprecated-sync",
@@ -736,7 +732,10 @@
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = NO;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -752,7 +751,10 @@
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = NO;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
