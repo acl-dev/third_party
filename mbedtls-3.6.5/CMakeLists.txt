@@ -196,6 +196,7 @@ if (${UNIX_OS})
 		"-D_POSIX_PTHREAD_SEMANTICS"
 		"-Wstrict-prototypes"
 		"-D_FILE_OFFSET_BITS=64"
+		"-std=c99"
 	)
 
 	if (CMAKE_COMPILER_IS_GNUCC)
