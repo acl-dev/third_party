@@ -2535,6 +2535,9 @@
  */
 #define MBEDTLS_BIGNUM_C
 
+// Add by zsx.
+#define MBEDTLS_BLOWFISH_C
+
 /**
  * \def MBEDTLS_CAMELLIA_C
  *

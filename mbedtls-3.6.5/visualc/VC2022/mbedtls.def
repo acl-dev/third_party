@@ -61,7 +61,7 @@ mbedtls_rsa_complete
 mbedtls_rsa_pkcs1_encrypt
 mbedtls_rsa_pkcs1_decrypt
 mbedtls_rsa_pkcs1_verify
-mbedtls_md5_ret
+mbedtls_md5
 
 mbedtls_mpi_bitlen
 mbedtls_mpi_read_string
