@@ -1,5 +1,6 @@
 LIBRARY mbedtls
 EXPORTS
+mbedtls_version_get_string_full
 mbedtls_threading_set_alt
 mbedtls_pk_init
 mbedtls_pk_free
